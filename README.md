@@ -1,28 +1,42 @@
-# netactuate-node
+# NetActuate TypeScript SDK
 
-TypeScript client for the NetActuate API, covering compute, networking, storage, DNS and managed
-Kubernetes.
+TypeScript client for the NetActuate vAPI2 and vAPI3 APIs. It covers the SDK foundation plus servers, DNS zones and records, VPCs, storage buckets and NKE clusters.
 
-This client is in active development and is not yet published. It is built to the same contract
-as the other NetActuate SDKs, so the calls it exposes match the Go, Python, PHP, TypeScript and
-Rust clients one for one.
+## Install
 
-Once published, installation will be:
-
-```bash
-npm install @netactuate/netactuate
+```sh
+npm install @netactuate/sdk
 ```
 
-## Status
+## Authenticate
 
-| | |
-| --- | --- |
-| Published | not yet |
-| Supersedes | the previous generation client under the `hostvirtual` organisation |
+Pass an API key explicitly, or set `NETACTUATE_API_KEY`.
 
-The Go client, [gona](https://github.com/netactuate/gona), is published and is the reference
-implementation for this one.
+```ts
+import { Client, V3Client } from "@netactuate/sdk";
 
-## Documentation
+const v2 = new Client();
+const v3 = new V3Client();
+```
 
-Platform documentation and guides are at [netactuate.com/docs](https://netactuate.com/docs).
+An empty base URL uses production. `Client` talks to vAPI2 at `https://vapi2.netactuate.com/api/`. `V3Client` talks to vAPI3 at `https://vapi3.netactuate.com`.
+
+## vAPI2 and vAPI3
+
+vAPI2 covers cloud servers and DNS in this release:
+
+```ts
+const servers = await v2.getServers();
+const zone = await v2.createZone({ name: "example.com", type: "NATIVE" });
+```
+
+vAPI3 covers VPCs, storage buckets and NKE clusters:
+
+```ts
+const vpcs = await v3.listVpcs();
+const clusters = await v3.listNkeClusters();
+```
+
+Both clients accept a custom transport for tests and integrations that need to intercept requests. The SDK never opens a platform socket in its unit tests.
+
+API documentation is available at https://netactuate.com/docs.
