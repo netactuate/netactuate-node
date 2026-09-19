@@ -2,4 +2,7 @@ declare module "vitest" {
   export const describe: (name: string, fn: () => void) => void;
   export const it: (name: string, fn: () => void | Promise<void>) => void;
   export const expect: any;
+  export const vi: {
+    fn: <T extends (...args: any[]) => any>(implementation?: T) => T & { mock: { calls: unknown[][] } };
+  };
 }

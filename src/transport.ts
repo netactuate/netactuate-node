@@ -6,6 +6,8 @@ export interface TransportResponse {
   status: number;
   /** Response body as text. */
   text(): Promise<string>;
+  /** Response body as raw bytes, required only for endpoints that return binary content. */
+  arrayBuffer?(): Promise<ArrayBuffer>;
 }
 
 /** Request transport used by the SDK. */
@@ -36,7 +38,8 @@ export function defaultTransport(): Transport {
     const response = await fetch(url, init);
     return {
       status: response.status,
-      text: () => response.text()
+      text: () => response.text(),
+      arrayBuffer: () => response.arrayBuffer()
     };
   };
 }
